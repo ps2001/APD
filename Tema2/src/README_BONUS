@@ -1,0 +1,11 @@
+Pentru implementarea bonusului am folosit:
+
+
+-un reader comun, creat in Tema2, si care este folosit de toate threadurile L1 pentru citirea din orders.txt
+
+
+-un bloc synchronized, prin care asiguram accesul pe rand la cate o linie din fisier, astfel incat sa evit situatia
+in care doua sau mai multe threaduri ar fi procesat aceeasi linie din orders.txt
+
+
+-prin folosirea unui reader comun, care se actualizeaza constant, fiecare thread va citi doar partea sa din fisier(pe care o va si prelucra)

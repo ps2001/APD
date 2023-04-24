@@ -1,0 +1,28 @@
+Logica implementarii este urmatoarea:
+
+-Se creeaza nr_mapperi + nr_reduceri threaduri.
+
+-Threadurile mapper se folosesc de functia map_func(), iar cele reducer se folosesc de reduce_func()
+
+-Sincronizarea threadurilor se realizeaza prin utilizarea unei bariere;
+aceasta este plasata la sfarsitul functiei de map si inceputul functiei de reduce, pt a ne asigura ca
+operatiile de reduce se realizeaza dupa cele de map.
+
+
+Map_Func():
+-realizeaza repartitia dinamica a fisierelor catre threaduri asfel:
+1.cat timp mai avem fisiere nealocate, blocam lista de fisiere folosind un mutex(pt a ne asigura ca nu alocam acelasi fisier mai multor threaduri)
+2.marcheaza fisierul ca fiind prelucrat si deblocheaza mutex-ul pentru a permite si altui thread sa prelucreze un fisier.
+3.gaseste numerele care sunt puteri perfecte din acel fisier
+
+
+Reduce_Func():
+-realizeaza operatiile de map astfel:
+1.parcurge lista care stocheaza pentru fiecare mapper, lista de puteri perfecte pentru fiecare exponent
+2.foloseste un unordered_map pentru a asigura faptul ca nu avem duplicate
+3.scrie in fisierul de iesire dimensiunea map ului
+
+Main():
+-parseaza argumentele din linie de comanda
+-populeaza structuriile pt mapper si reducer
+-creeaza thread-urile si le da join

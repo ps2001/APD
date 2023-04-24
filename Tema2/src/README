@@ -1,0 +1,29 @@
+In implementarea temei am folosit 3 clase: Tema2, Task, MyRunnable
+
+1.Tema2
+-parseaza parametrii din linie de comanda
+-creeaza P threaduri de nivel 1
+-creeaza un reader pt orders.txt, partajat de threadurile de nivel 1
+
+
+2.Task
+-logica unui thread de nivel 1
+-citeste cu un reader comun fisierul orders.txt
+-problemele de concurenta sunt rezolvate prin folosirea synchronized
+-pt fiecare comanda citita, creeaza un executor service prin care se asigura ca
+nu vor fi mai mult de P threaduri de nivel 2 deschise la un moment de timp
+
+-dupa ce threadurile de nivel 2 au terminat de procesat produsele comenzii curente,
+statusul comenzii este scris in orders_out.txt
+
+
+
+3.MyRunnable
+-logica threadurilor de nivel 2
+-contine modelul executor service, pt o gestionare a concurentei
+-se citeste linie cu linie fisierul order_products.txt
+-daca comanda din order_products corespunde cu cea transmisa de threadul de nivel1,
+verifica ca produsul indexul produsului in comanda sa fie egal cu cel pe care
+trebuie sa-l marcheze ca shipped
+
+-daca este, atunci scrie in order_products_out.txt

@@ -1,0 +1,62 @@
+Am implementat tema tinand cont inca de la inceput de faptul ca nu exista legatura intre 0 si 1(Task3)
+
+Task1
+-am ales sa reprezint topologia sub forma de matrice 4xnr_procese;
+topology[i][j] = 1 <=> j este worker pentru coordonatorul i
+topology[i][j] = 0 <=> j NU este worker pentru coordonatorul i
+
+-am modularizat codul in urmatoarele functii:
+1.read_neighbors()
+    ->fiecare coordonator citeste din cluster.txt workerii pe care ii detine
+    ->m-am asigurat in cadrul functiei ca doar coordonatorii citesc din fisier(rank <= 3)
+    ->am retinut workerii intr-un array: neigh[]
+
+
+2.announce_workers()
+    ->fiecare coordonator isi anunta workerii despre cine ii detine
+    ->memoreaza coordonatorul intr-o variabila
+
+
+3.get_topology()
+    ->se populeaza matricea topology
+    ->la inceput, fiecare coordonator isi populeaza matricea cu workerii proprii
+    ->stabilesc o topologie de comunicatie intre coordonatori:0->3->2->1
+    ->la fiecare pas, coordonatorul primeste din urma topology[][] pe care o completeaza cu campurile lui
+    ->dupa care, trimite matricea urmatorului coordonator care repeta procesul
+    ->la final, procesul 1 va detine topologia completa, care va fi doar propagata pe ruta:1->2->3->0
+
+
+4.main()
+    ->fiecare coordonator apeleaza get_topology() si trimite topology[][] workerilor sai
+    ->workerii primesc topologia
+
+
+
+Task2
+-impartirea echivoca a calculelor am realizat-o astfel:
+    ->am impartit vectorul v[] la nr de workeri dupa formula: start = i * (double) n / nr_workers;
+                                                              end = min(n, (i + 1) * (double) n / nr_workers)  (Laboratorul1);
+
+    ->astfel, fiecare worker primeste v[], dar primeste si indicii [start,end) intre care o sa faca inmultirile cu 5
+
+
+-functii implementate:
+1.calculate()
+    ->trateaza separat cele 4 cazuri pt coordonatori(rank = 0,1,2,3)
+
+    ->procesul 0 genereaza v[], start[], si end[] care reprezinta intervalul de calcul pt workeri
+
+    ->comunicarea se face tot prin topologia 0->3->2->1 si invers
+
+    ->transmite cei trei vectori de mai sus catre ceilalti coordonatori
+
+    ->fiecare coordonator primeste din stanga vectorii si le trimit workerilor v[], start, end
+
+    ->workerii, dupa ce termina calculele, trimit inapoi vectorul v catre coordonator
+
+    ->coordonatorul are acum rolul de a "asambla" vectorii primiti de la workeri si sa transmita
+    rezultatul catre procesul 0 pe drumul: 1->2->3->0
+
+
+Task3
+-acesta a fost rezolvat implicit atunci cand am implementat primele doua taskuri
